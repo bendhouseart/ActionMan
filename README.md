@@ -9,8 +9,17 @@ Fun to Funky
 3) Proof of work
 4) You enjoy working on other peoples computers
 
+## Goals
+
+After reading through this repository/demo you will be able to:
+
+- Set up actions for a git repository hosted on github.com
+- Use Make to simplify actions
+- Do work with actions on other code/repositories
+
 ## Setting up Actions
 
+<details>
 Create a git repository, then make a folder with a file in it.
 
 ```bash
@@ -41,6 +50,8 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
 ```
 
+Save those changes to `github-actions-demo.yaml` and then commit and push changes:
+
 ```bash
 # this is best practice, don't let others tell you otherwise
 git add --all
@@ -48,15 +59,17 @@ git commit -m "setup actions"
 git push origin main
 ```
 
-Now navigate to you repository to see your actions take off:
+Now navigate to you repository on github and click on the `actions` tab.
 
+![repo_page_github](media/repo_page_github.png)
 
+![repo_actions_page](media/repo_actions_page.png)
 
 Congrats, you have actions.
 
-Alternatively, fork this repository or visit the well put together documentation on [github](https://docs.github.com/en/actions/quickstart).
+**Alternatively**, [fork this repository](https://github.com/bendhouseart/ActionMan/fork) or visit the well put together documentation on [github](https://docs.github.com/en/actions/quickstart).
 
-
+</details>
 
 ## Oh please, mon dieu! Yaml? Github syntax?
 
