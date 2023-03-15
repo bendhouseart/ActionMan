@@ -9,15 +9,11 @@ Fun to Funky
 3) Proof of work
 4) You enjoy working on other peoples computers
 
-## Goals
-
-After reading through this repository/demo you will be able to:
-
-- Set up actions for a git repository hosted on github.com
-- Use Make to simplify actions
-- Do work with actions on other code/repositories
-
 ## Setting up Actions
+
+Read below to get started with setting up a repository to use actions. Some simple boiler plate 
+has been included below to help you get started. Feel free to improvise and not use it though, I'm a 
+README not a cop.
 
 <details>
 Create a git repository, then make a folder with a file in it.
@@ -73,3 +69,28 @@ Congrats, you have actions.
 
 ## Oh please, mon dieu! Yaml? Github syntax?
 
+I don't carry a torch for Github nor it's Actions syntax, you don't have to either. It's often desirable to 
+wrap or define "Action" steps independently from the workflow files in `.github/workflows`.
+
+There are infinitely many ways of doing this, but for this short demo we will focus on using Make.
+
+<details>
+
+</details>
+
+## Acting Out
+
+For this demo we're going to demonstrate some of the steps required to act on a different 
+github repository.
+
+To complete this exercise you will need to:
+
+- Create another github repository on the same account/user as the one you previously made
+- Generate a [Fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#fine-grained-personal-access-tokens) with the appropriate permissions
+- Checkout the newly created repository in Actions
+- Push changes using Actions and the Token created in step 2
+
+
+<details>
+
+</details>

@@ -1,0 +1,82 @@
+name: "act_on_other_repo"
+
+on:
+  push:
+    branches:
+      - "master"
+      - "main"
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+
+# I like bash, the B is for Best
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  act_on_other_repo:
+    runs-on: ${{ matrix.os }}
+    name: Doing Magic in the Cloud
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+    steps:
+    # First we checkout this repository, notice that we aren't persiting credentials
+    - uses: actions/checkout@v3
+      with:
+        path: source
+        persist-credentials: false
+
+    # we checkout the other repo we want to act on; update other-repo with the name of your repo
+    - name: Collect Other repo
+      uses: actions/checkout@v3
+      # notice all of the extra options we are using here in the checkout action
+      # compared to the checkout action above
+      with:
+        ref: main
+        repository: ${{ github.repository_owner }}/other-repo
+        path: dest
+        token: ${{ secrets.ACTIONS_TOKEN_CREATED_BY_YOU }}
+        fetch-depth: 0
+        persist-credentials: true
+
+    # Now we want to make some updates to the other repo, idk make a file or something
+    - name: Make some updates
+      working-directory: dest
+      run: |
+        now=$(date)
+        echo "${now}: Hello World" >> hello.txt
+
+    # Now we want to check if any changes were made
+    - name: Check for Updates
+      id: updatesmade
+      working-directory: dest
+      run: |
+        git add --all
+        git status --porcelain
+        if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+          echo "changesmade=true" >> $GITHUB_OUTPUT
+        else
+          echo "No changes made."
+          echo "You must be up to no good."
+          echo "changesmade=false" >> $GITHUB_OUTPUT
+        fi
+
+    # Now we want to push the updates to the other repo
+    - name: Push Updates
+      if: ${{ steps.updatesmade.outputs.changesmade  == 'true' }}
+      working-directory: dest
+      env:
+        ACTOR: ${{ github.actor }}
+        OWNER: ${{ github.repository_owner }}
+      run: |
+        git config --global user.name "$ACTOR"
+        git config --global user.email "$ACTOR@noreply.com"
+        git add --all
+        git commit -m "Auto update from bids-specification $GITHUB_SHA"
+        git push
