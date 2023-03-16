@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-echo "Hey I'm take args and I'm taking this arg: $1"
+echo "Hey I'm take args and I'm taking this arg(s): $@"

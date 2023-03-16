@@ -1,0 +1,17 @@
+
+name: "Use Make and Scripts"
+on:
+  push
+  workflow_dispatch
+jobs:
+  Use-Make-and-Scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Dependencies
+        run: make installdeps
+      
+      - name: Run make buildpackage
+        run: make buildpackage
+      
+      - name: Run Script Directly
+        run: ./scripts/hello_world.py

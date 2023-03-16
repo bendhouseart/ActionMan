@@ -72,25 +72,103 @@ Congrats, you have actions.
 I don't carry a torch for Github nor it's Actions syntax, you don't have to either. It's often desirable to 
 wrap or define "Action" steps independently from the workflow files in `.github/workflows`.
 
-There are infinitely many ways of doing this, but for this short demo we will focus on using Make.
+There are infinitely many ways of doing this, but for this short demo we will focus on writing small scripts and
+using make to perform "complicated" steps that we might want to use in CI.
 
 <details>
 
+While it's more than acceptable to run a command like this in actions:
+
+```yaml
+- name: Check for Updates
+      id: updatesmade
+      working-directory: dest
+      run: |
+        git add --all
+        git status --porcelain
+        if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+          echo "changesmade=true" >> $GITHUB_OUTPUT
+        else
+          echo "No changes made."
+          echo "You must be up to no good."
+          echo "changesmade=false" >> $GITHUB_OUTPUT
+        fi
+```
+
+It might be more palatable to instead create a small script containing your logic:
+
+```bash changesmade
+#!/usr/bin/env bash
+git add --all
+git status --porcelain
+if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+    echo "changesmade=true" >> $GITHUB_OUTPUT
+else
+    echo "No changes made."
+    echo "You must be up to no good."
+    echo "changesmade=false" >> $GITHUB_OUTPUT
+fi
+```
+
+Which simplifies your actions:
+
+```yaml
+- name: Check for Updates
+      id: updatesmade
+      working-directory: dest
+      run: ./changesmade
+```
+
 </details>
 
-## Acting Out
+## Debugging
 
-For this demo we're going to demonstrate some of the steps required to act on a different 
-github repository.
+How do you trouble shoot actions at a distance? 
 
-To complete this exercise you will need to:
+- ensure steps in actions run locally via scripts/make
+- check status badges
+- review action logs
+- keep pushing till things work
 
-- Create another github repository on the same account/user as the one you previously made
-- Generate a [Fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#fine-grained-personal-access-tokens) with the appropriate permissions
-- Checkout the newly created repository in Actions
-- Push changes using Actions and the Token created in step 2
-
+Lastly, one can [ssh into actions runner and poke around using tmate](https://github.com/marketplace/actions/debugging-with-tmate).
 
 <details>
 
+```yaml
+# Include a manual trigger in your workflow and enable debugging
+workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+
+# then place this step into your workflow file
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+```
 </details>
+
+
+## Technical Challenge
+
+Ingredients:
+
+- github user account
+- two github repositories
+- [Fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#fine-grained-personal-access-tokens)
+- github actions workflow file
+
+Instructions:
+
+- Configure and apply Fine-grained personal access token on working repo
+- Checkout second repo from first repository
+- Make and push a change to the second repo from the first using actions
