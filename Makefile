@@ -19,3 +19,11 @@ installdeps: ## install dependencies
 
 installpackage: ## installs latest package
 	@echo "scripts/installpackage"
+
+buildrusthello: ## compiles rusthello
+	@cd scripts && rustc hello_world.rs
+
+rusthello:
+	@cd scripts && ./hello_world
+
+dotwothings: buildrusthello rusthello## does two things 

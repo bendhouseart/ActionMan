@@ -5,9 +5,9 @@ Fun to Funky
 
 0) Why not?
 1) It's free
-2) Testing good
+2) Testing is good
 3) Proof of work
-4) You enjoy working on other peoples computers
+4) Ability to run code on multiple architectures and operating systems
 
 ## Setting up Actions
 
